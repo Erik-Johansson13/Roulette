@@ -13,11 +13,25 @@ int wallet = 100;
 int bet = 0;
 int account = 0;
 int sum = 0;
+int loan = 0;
 string choice = "";
 string deny = "There is no such choice";
+string rColor = "";
 int bankInput = 0;
 bool bankrupt = false;
 bool snakeEyes = false;
+bool leave = false;
+int[] red = { 32, 19, 21, 25, 34, 27, 36, 30, 23, 5, 16, 1, 14, 9, 18, 7, 12, 3 };
+int[] black = { 15, 4, 2, 17, 6, 13, 11, 8, 10, 24, 33, 20, 31, 22, 29, 28, 35, 26 };
+int greenMult = 36;
+int redMult = 2;
+int evenMult = 2;
+int oddMult = 2;
+int blackMult = 2;
+int numMult = 36;
+int betNum = 0;
+int randNum = -1;
+int rouletteNum = -1;
 Random rand = new Random();
 
 // The game
@@ -49,14 +63,14 @@ while (!bankrupt)
         choice = Console.ReadLine();
         if (choice != "1" && choice != "2")
         {
-            Console.WriteLine("There is no such choice");
+            Console.WriteLine(deny);
         }
     }
     if (choice == "1")
     {
         Console.WriteLine("");
         Console.WriteLine("'Welcome to the roulette table'");
-        while (true)
+        while (!leave)
         {
             choice = "0";
             Console.WriteLine();
@@ -75,17 +89,157 @@ while (!bankrupt)
             }
             if(choice == "1")
             {
+                choice = "0";
                 // The roulette game
                 Console.WriteLine("'You want to try your luck eh?'");
-                while (true)
+                while (!leave)
                 {
                     Console.WriteLine("'First of all, you should decide on what gamemode you want to play'");
-                    Console.WriteLine("'We offer either normal mode, which is just usual roulette, or snakeeyes'");
-                    Console.WriteLine("'In snakeyes you use 2 roulette wheels instead of 1, and if both come up to be true in line with your guess, your win is squared'");
+                    Console.WriteLine("'We offer either normal mode, which is just usual roulette, or snake eyes'");
+                    Console.WriteLine("'In snake eyes you use 2 roulette wheels instead of 1, and if both come up to be true in line with your guess, your win multiplier is squared'");
                     Console.WriteLine();
-                    Console.WriteLine("1. Normal");
-                    Console.WriteLine("2. Snakeeyes");
-                    Console.WriteLine("3. Leave");
+                    while (choice != "1" && choice != "2" && choice != "3")
+                    {
+                        Console.WriteLine("1. Normal");
+                        Console.WriteLine("2. Snake eyes");
+                        Console.WriteLine("3. Leave");
+                        choice = Console.ReadLine();
+                        if (choice != "1" && choice != "2" && choice != "3")
+                        {
+                            Console.WriteLine(deny);
+                        }
+                    }
+                    //Normal roulette
+                    if(choice == "1")
+                    {
+                        choice = "0";
+                        Console.WriteLine("Time to play");
+                        while (true)
+                        {
+                            Console.WriteLine();
+                            Console.WriteLine("What do you want to bet on?");
+                            while (choice != "1" && choice != "2" && choice != "3" && choice != "4" && choice != "5" && choice != "6")
+                            {
+                                Console.WriteLine();
+                                Console.WriteLine("1. Even 1:1");
+                                Console.WriteLine("2. Odd 1:1");
+                                Console.WriteLine("3. Red 1:1");
+                                Console.WriteLine("4. Black 1:1");
+                                Console.WriteLine("5. Single 35:1");
+                                Console.WriteLine("6. Green 35:1");
+                                choice = Console.ReadLine();
+                                if (choice != "1" && choice != "2" && choice != "3" && choice != "4" && choice != "5" && choice != "6")
+                                {
+                                    Console.WriteLine(deny);
+                                }
+                            }
+                            if (choice == "1")
+                            {
+
+                            }
+                            if (choice == "2")
+                            {
+
+                            }
+                            if (choice == "3")
+                            {
+
+                            }
+                            if (choice == "4")
+                            {
+
+                            }
+                            if (choice == "5")
+                            {
+
+                            }
+                            if (choice == "6")
+                            {
+
+                            }
+                            Console.WriteLine();
+                            Console.WriteLine("How many souls would you like to bet?");
+                            Console.WriteLine();
+                            while (!leave)
+                            {
+                                while (true)
+                                {
+                                    try
+                                    {
+                                        bet = Convert.ToInt32(Console.ReadLine());
+                                        break;
+                                    }
+                                    catch
+                                    {
+                                        Console.WriteLine("'You know you can only bet souls, right?'");
+                                    }
+                                }
+                                if (bet > 0 && bet <= wallet)
+                                {
+                                    Console.WriteLine("'You have successfully made a bet of " + bet + " fragmented souls'");
+                                    { 
+                                        Console.WriteLine();
+                                        Console.WriteLine("'Initiate the spin, my lucky fellow'");
+                                        Console.ReadLine();
+                                        Console.WriteLine("Spinning...");
+                                        Console.ReadLine();
+                                        randNum = rand.Next(0, 36);
+                                        if(randNum < 19 && randNum > 0)
+                                        {
+                                            rColor = "red";
+                                        }
+                                        else if (randNum == 0)
+                                        {
+                                            rColor = "green";
+                                        }
+                                        else
+                                        {
+                                            rColor = "black";
+                                        }
+                                        if (rColor.Equals("red"))
+                                        {
+                                            randNum = rand.Next(0, red.Length + 1);
+                                            rouletteNum = red[randNum];
+                                        }
+                                        else if (rColor.Equals("black"))
+                                        {
+                                            randNum = rand.Next(0, black.Length + 1);
+                                            rouletteNum = black[randNum];
+                                        }
+                                        else
+                                        {
+                                            rouletteNum = 0;
+                                        }
+                                    }
+                                }
+                                else if (bet == 0)
+                                {
+                                    Console.WriteLine("You regret your decisions last minute and leave");
+                                    Console.WriteLine();
+                                    Console.WriteLine("You coward");
+                                    Console.WriteLine();
+                                    leave = true;
+                                }
+                                else
+                                {
+                                    Console.WriteLine("'You do know that this is an impossible amount considering your current balance, right?'");
+                                    Console.WriteLine();
+                                }
+                            }
+                        }
+                    }
+                    //Snake eyes roulette
+                    if(choice == "2")
+                    {
+                        Console.WriteLine("Feeling lucky are we?");
+                    }
+                    if(choice == "3")
+                    {
+                        Console.WriteLine();
+                        Console.WriteLine("You coward");
+                        Console.WriteLine();
+                        leave = true;
+                    }
 
                 }
             }
@@ -95,10 +249,11 @@ while (!bankrupt)
                 Console.WriteLine("You coward");
                 Console.WriteLine();
                 choice = "0";
-                break;
+                leave = true;
             }
         }
     }
+    leave = false;
     if (choice == "2")
     {
         Console.WriteLine("'Welcome to the account managing'");
@@ -123,7 +278,7 @@ while (!bankrupt)
         }
         if (choice == "1")
         {
-            while (true)
+            while (!leave)
             {
                 Console.WriteLine("'How much would you like to deposit?'");
                 Console.WriteLine();
@@ -146,7 +301,7 @@ while (!bankrupt)
                 {
                     Console.WriteLine("You regret your decisions last minute and leave");
                     Console.WriteLine();
-                    break;
+                    leave = true;
                 }
                 else
                 {
@@ -157,7 +312,7 @@ while (!bankrupt)
         }
         if (choice == "2")
         {
-            while (true)
+            while (!leave)
             {
                 Console.WriteLine("'How much would you like to withdraw?'");
                 Console.WriteLine();
@@ -180,7 +335,7 @@ while (!bankrupt)
                 {
                     Console.WriteLine("You regret your decisions last minute and leave");
                     Console.WriteLine();
-                    break;
+                    leave = true;
                 }
                 else
                 {
@@ -192,7 +347,7 @@ while (!bankrupt)
         if (choice == "3")
         {
             /*
-            while (true)
+            while (!leave)
             {
                 Console.WriteLine("'How much would you like to deposit?'");
                 Console.WriteLine();
@@ -231,6 +386,7 @@ while (!bankrupt)
         }
 
     }
+    leave = false;
     sum = account + wallet;
     if (sum <= 0)
     {
