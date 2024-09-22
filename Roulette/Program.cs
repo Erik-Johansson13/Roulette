@@ -9,6 +9,8 @@
 // with interest of 5% for every turn and they have to be paid back within 5 turns
 // and user can't exit with an active loan without filing for bankruptcy
 
+using System.Runtime.InteropServices;
+
 int wallet = 100;
 int bet = 0;
 int account = 0;
@@ -30,8 +32,19 @@ int oddMult = 2;
 int blackMult = 2;
 int numMult = 36;
 int betNum = 0;
+int mult = 1;
+int payOut = 0;
+
 int randNum = -1;
 int rouletteNum = -1;
+
+bool single = false;
+bool betRed = false;
+bool betBlack = false;
+bool even = false;
+bool odd = false;
+bool green = false;
+bool win = false;
 Random rand = new Random();
 
 // The game
@@ -112,10 +125,10 @@ while (!bankrupt)
                     //Normal roulette
                     if(choice == "1")
                     {
-                        choice = "0";
                         Console.WriteLine("Time to play");
-                        while (true)
+                        while (!leave)
                         {
+                            choice = "0";
                             Console.WriteLine();
                             Console.WriteLine("What do you want to bet on?");
                             while (choice != "1" && choice != "2" && choice != "3" && choice != "4" && choice != "5" && choice != "6")
@@ -135,28 +148,53 @@ while (!bankrupt)
                             }
                             if (choice == "1")
                             {
-
+                                even = true;
                             }
                             if (choice == "2")
                             {
-
+                                odd = true;
                             }
                             if (choice == "3")
                             {
-
+                                betRed = true;
                             }
                             if (choice == "4")
                             {
-
+                                betBlack = true;
                             }
                             if (choice == "5")
                             {
-
+                                single = true;
+                                while (true)
+                                {
+                                    Console.WriteLine();
+                                    Console.WriteLine("'Which number?'");
+                                    try
+                                    {
+                                        betNum = Convert.ToInt32(Console.ReadLine());
+                                        if (betNum != 0) 
+                                        { 
+                                        break;
+                                        }
+                                        else
+                                        {
+                                            Console.WriteLine();
+                                            Console.WriteLine("'If you want to bet on green then bet on green!'");
+                                        }
+                                    }
+                                    catch
+                                    {
+                                        Console.WriteLine();
+                                        Console.WriteLine("'Please bet on a valid number'");
+                                    }
+                                }
                             }
                             if (choice == "6")
                             {
-
+                                green = true;
                             }
+
+                            choice = "0";
                             Console.WriteLine();
                             Console.WriteLine("How many souls would you like to bet?");
                             Console.WriteLine();
@@ -183,7 +221,7 @@ while (!bankrupt)
                                         Console.ReadLine();
                                         Console.WriteLine("Spinning...");
                                         Console.ReadLine();
-                                        randNum = rand.Next(0, 36);
+                                        randNum = rand.Next(0, 37);
                                         if(randNum < 19 && randNum > 0)
                                         {
                                             rColor = "red";
@@ -210,6 +248,113 @@ while (!bankrupt)
                                         {
                                             rouletteNum = 0;
                                         }
+                                        Console.WriteLine(randNum);
+                                        Console.WriteLine(rColor);
+                                        if (even)
+                                        {
+                                            if (randNum % 2 == 0 && randNum != 0)
+                                            {
+                                                win = true;
+                                                mult = evenMult;
+                                            }
+                                        }
+                                        if (odd)
+                                        {
+                                            if (randNum % 2 != 0 && randNum != 0)
+                                            {
+                                                win = true;
+                                                mult = oddMult;
+                                            }
+
+                                        }
+                                        if (betRed)
+                                        {
+                                            if (rColor == "red")
+                                            {
+                                                win = true;
+                                                mult = redMult;
+                                            }
+                                        }
+                                        if (betBlack)
+                                        {
+                                            if (rColor == "black")
+                                            {
+                                                win = true;
+                                                mult = blackMult;
+                                            }
+                                        }
+                                        if (single)
+                                        {
+                                            if (betNum == randNum)
+                                            {
+                                                win = true;
+                                                mult = numMult;
+                                            }
+                                        }
+                                        if (green)
+                                        {
+                                            if (rColor == "green")
+                                            {
+                                                win = true;
+                                                mult = greenMult;
+                                            }
+                                        }
+
+                                        // Checking if the user has won and calculating loss or profit
+                                        if (win)
+                                        {
+                                            payOut = bet * mult;
+                                            Console.WriteLine();
+                                            Console.WriteLine("You win!");
+                                            Console.WriteLine("You have won " + (payOut - bet) + " fragmented souls");
+                                            Console.WriteLine();
+                                            wallet += payOut;
+                                        }
+                                        else
+                                        {
+                                            Console.WriteLine();
+                                            Console.WriteLine("You lose!");
+                                            Console.WriteLine("You have lost " + bet + " fragmented souls");
+                                            Console.WriteLine();
+                                            wallet -= bet;
+                                        }
+
+                                        single = false;
+                                        betRed = false;
+                                        betBlack = false;
+                                        even = false;
+                                        odd = false;
+                                        green = false;
+                                        win = false;
+                                        mult = 0;
+                                        payOut = 0;
+                                        bet = 0;
+
+                                        Console.WriteLine("'Would you like to play again?'");
+                                        while (choice != "1" && choice != "2")
+                                        {
+                                            Console.WriteLine();
+                                            Console.WriteLine("1. Play again");
+                                            Console.WriteLine("2. Go to the lobby");
+                                            choice = Console.ReadLine();
+                                            if (choice != "1" && choice != "2")
+                                            {
+                                                Console.WriteLine(deny);
+                                            }
+                                        }
+                                        if (choice == "1")
+                                        {
+                                            break;
+                                        }
+                                        if (choice == "2")
+                                        {
+                                            leave = true;
+                                        }
+
+
+
+
+
                                     }
                                 }
                                 else if (bet == 0)
