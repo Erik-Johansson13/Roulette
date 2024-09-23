@@ -16,6 +16,7 @@ int bet = 0;
 int account = 0;
 int sum = 0;
 int loan = 0;
+string[] gossip = { };
 string choice = "";
 string deny = "There is no such choice";
 string rColor = "";
@@ -63,6 +64,7 @@ Console.WriteLine();
 // Game loop
 while (!bankrupt)
 {
+    leave = false;
     choice = "0";
     Console.WriteLine("A little imp bearing a luxurious tuxedo is situated at front the desk");
     Console.WriteLine("'Hello and welcome to Lucifers!'");
@@ -82,6 +84,7 @@ while (!bankrupt)
             Console.WriteLine(deny);
         }
     }
+    // The roulette table
     if (choice == "1")
     {
         Console.WriteLine("");
@@ -681,6 +684,7 @@ while (!bankrupt)
         }
     }
     leave = false;
+    // Account managing
     if (choice == "2")
     {
         Console.WriteLine("'Welcome to the account managing'");
@@ -815,33 +819,94 @@ while (!bankrupt)
 
     }
     leave = false;
+    // The bar
     if (choice == "3")
     {
         Console.WriteLine("'Welcome to the bar my lost friend, could I perhaps influence you with a drink?'");
         choice = "0";
-        while (choice != "1" && choice != "2" && choice != "3")
-        {
-            Console.WriteLine();
-            Console.WriteLine("1. Buy a drink");
-            Console.WriteLine("2. Leave");
-            Console.WriteLine("3. Listen to the gossip and rumors");
-            choice = Console.ReadLine();
-            if (choice != "1" && choice != "2" && choice != "3")
+        while(!leave) {
+            while (choice != "1" && choice != "2" && choice != "3")
             {
-                Console.WriteLine(deny);
+                Console.WriteLine();
+                Console.WriteLine("1. Buy a drink");
+                Console.WriteLine("2. Leave");
+                Console.WriteLine("3. Listen to the gossip and rumors");
+                choice = Console.ReadLine();
+                if (choice != "1" && choice != "2" && choice != "3")
+                {
+                    Console.WriteLine(deny);
+                }
             }
-        }
-        while (!leave) { 
-            if (choice == "1")
-            {
+            while (!leave) {
+                if (choice == "1")
+                {
+                    choice = "0";
+                    Console.WriteLine();
+                    Console.WriteLine("Its red face starts turning and twisting into a wicked smile");
+                    Console.WriteLine();
+                    Console.WriteLine("'So, what can I get for you?'");
+                    while (choice != "1" && choice != "2" && choice != "3" && choice != "4" && choice != "5" && choice != "6")
+                    {
+                        Console.WriteLine();
+                        Console.WriteLine("1. Boiled blood, 3 souls");
+                        Console.WriteLine("2. Marrow margherita, 5 souls");
+                        Console.WriteLine("3. Locust special, 10 souls");
+                        Console.WriteLine("4. Arsenic shot, 20 souls");
+                        Console.WriteLine("5. Cold desire, 50 souls");
+                        Console.WriteLine("6. A water, 0 souls");
+                        choice = Console.ReadLine();
+                        if (choice != "1" && choice != "2" && choice != "3" && choice != "4" && choice != "5" && choice != "6")
+                        {
+                            Console.WriteLine(deny);
+                        }
+                    }
+                    Console.WriteLine("");
+                    if (choice == "1")
+                    {
+                        choice = "0";
+                    }
+                    if (choice == "2")
+                    {
+                        choice = "0";
+                    }
+                    if (choice == "3")
+                    {
+                        choice = "0";
+                    }
+                    if (choice == "4")
+                    {
+                        choice = "0";
+                    }
+                    if (choice == "5")
+                    {
+                        choice = "0";
+                    }
+                    if (choice == "6")
+                    {
+                        choice = "0";
+                    }
 
-            }
-            if (choice == "2")
-            {
-                Console.WriteLine();
-                Console.WriteLine("In a moment of clarity, you decide that this is not the best course of action as of currently");
-                Console.WriteLine();
-                leave = true;
+                }
+                if (choice == "2")
+                {
+                    choice = "0";
+                    Console.WriteLine();
+                    Console.WriteLine("In a moment of clarity, you decide that this is not the best course of action for the situation you're in");
+                    Console.WriteLine();
+                    leave = true;
+                }
+                if (choice == "3")
+                {
+                    // Choosing tips to tell to the user
+                    choice = "0";
+                    randNum = rand.Next(0, gossip.Length);
+                    Console.WriteLine("Its small pupils start dotting around the room");
+                    Console.WriteLine();
+                    Console.WriteLine("'This is just something I've heard from our guests here, but I heard that " + gossip[randNum] + "'");
+                    Console.WriteLine();
+                    randNum = -1;
+                    break;
+                }
             }
         }
     }
