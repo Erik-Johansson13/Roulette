@@ -16,7 +16,10 @@ int bet = 0;
 int account = 0;
 int sum = 0;
 int loan = 0;
-string[] gossip = { };
+int loanTime = 0;
+bool loanActive = false;
+int drunkTime = 0;
+string[] gossip = {"I heard that someone got extremely wasted on boiled blood and marrow margaritas and then went and won twice as often at the roulette table" , "Apparently someone died after downing five straight shots of arsenic. That sounds like total bull, of course" ,  };
 string choice = "";
 string deny = "There is no such choice";
 string rColor = "";
@@ -64,9 +67,11 @@ Console.WriteLine();
 // Game loop
 while (!bankrupt)
 {
+    Console.Clear();
+
     leave = false;
     choice = "0";
-    Console.WriteLine("A little imp bearing a luxurious tuxedo is situated at front the desk");
+    Console.WriteLine("A little imp bearing a luxurious tuxedo is situated at the front desk");
     Console.WriteLine("'Hello and welcome to Lucifers!'");
     Console.WriteLine("'What would you like to do?'");
     Console.WriteLine("You currently have " + wallet + " fragmented souls on hand");
@@ -87,6 +92,8 @@ while (!bankrupt)
     // The roulette table
     if (choice == "1")
     {
+        Console.Clear();
+
         Console.WriteLine("");
         Console.WriteLine("'Welcome to the roulette table'");
         while (!leave)
@@ -94,7 +101,7 @@ while (!bankrupt)
             choice = "0";
             Console.WriteLine();
             Console.WriteLine("'What would you like to do?'");
-            Console.WriteLine("You currently have " + wallet + " fragmented souls");
+            Console.WriteLine("You currently have " + wallet + " fragmented souls on hand");
             Console.WriteLine();
             while (choice != "1" && choice != "2")
             {
@@ -108,6 +115,8 @@ while (!bankrupt)
             }
             if (choice == "1")
             {
+                Console.Clear();
+
                 choice = "0";
                 // The roulette game
                 Console.WriteLine("'You want to try your luck eh?'");
@@ -131,6 +140,9 @@ while (!bankrupt)
                     //Normal roulette
                     if (choice == "1")
                     {
+                        Console.Clear();
+
+                        Console.WriteLine();
                         Console.WriteLine("Time to play");
                         while (!leave)
                         {
@@ -203,6 +215,7 @@ while (!bankrupt)
                             choice = "0";
                             Console.WriteLine();
                             Console.WriteLine("How many souls would you like to bet?");
+                            Console.WriteLine("You currently have " + wallet + " fragmented souls on hand");
                             Console.WriteLine();
                             while (!leave)
                             {
@@ -221,14 +234,75 @@ while (!bankrupt)
                                 if (bet > 0 && bet <= wallet)
                                 {
                                     Console.WriteLine("'You have successfully made a bet of " + bet + " fragmented souls'");
+                                    // Spin
                                     {
+                                        // Checking if user has drank and applying bonuses
+                                        if(drunkTime > 0)
+                                        {
+                                            Console.WriteLine();
+                                            Console.WriteLine("You feel slightly tipsy, and slighty lucky");
+                                            drunkTime -= 1;
+                                            if (betBlack)
+                                            {
+                                                randNum = rand.Next(0, 37);
+                                                if (!black.Contains(randNum))
+                                                {
+                                                    randNum = rand.Next(0, 37);
+                                                }
+                                            }
+                                            else if (betRed)
+                                            {
+                                                randNum = rand.Next(0, 37);
+                                                if (!red.Contains(randNum))
+                                                {
+                                                    randNum = rand.Next(0, 37);
+                                                }
+                                            }
+                                            else if (odd)
+                                            {
+                                                randNum = rand.Next(0, 37);
+                                                if (randNum % 2 == 0)
+                                                {
+                                                    randNum = rand.Next(0, 37);
+                                                }
+                                            }
+                                            else if (even)
+                                            {
+                                                randNum = rand.Next(0, 37);
+                                                if (randNum % 2 != 0)
+                                                {
+                                                    randNum = rand.Next(0, 37);
+                                                }
+                                            }
+                                            else if (green)
+                                            {
+                                                randNum = rand.Next(0, 37);
+                                                if (randNum != 0)
+                                                {
+                                                    randNum = rand.Next(0, 37);
+                                                }
+                                            }
+                                            else if (single)
+                                            {
+                                                randNum = rand.Next(0, 37);
+                                                if (betNum != randNum)
+                                                {
+                                                    randNum = rand.Next(0, 37);
+                                                }
+                                            }
+                                        }
+                                        else
+                                        {
+                                            Console.WriteLine();
+                                            Console.WriteLine("You're more sober than a rock");
+                                            randNum = rand.Next(0, 37);
+                                        }
                                         Console.WriteLine();
                                         Console.WriteLine("'Initiate the spin, my lucky fellow'");
-                                        Console.ReadLine();
+                                        Console.ReadKey();
                                         Console.WriteLine("Spinning...");
-                                        Console.ReadLine();
-                                        randNum = rand.Next(0, 37);
-                                        if (randNum < 19 && randNum > 0)
+                                        Console.ReadKey();
+                                        if (red.Contains(randNum))
                                         {
                                             rColor = "red";
                                         }
@@ -240,21 +314,9 @@ while (!bankrupt)
                                         {
                                             rColor = "black";
                                         }
-                                        if (rColor.Equals("red"))
-                                        {
-                                            randNum = rand.Next(0, red.Length + 1);
-                                            rouletteNum = red[randNum];
-                                        }
-                                        else if (rColor.Equals("black"))
-                                        {
-                                            randNum = rand.Next(0, black.Length + 1);
-                                            rouletteNum = black[randNum];
-                                        }
-                                        else
-                                        {
-                                            rouletteNum = 0;
-                                        }
-                                        Console.WriteLine(randNum);
+                                        rouletteNum = randNum;
+                                        Thread.Sleep(1000);
+                                        Console.WriteLine(rouletteNum);
                                         Console.WriteLine(rColor);
 
                                         // Checking what user has bet on
@@ -354,10 +416,13 @@ while (!bankrupt)
                                         }
                                         if (choice == "1")
                                         {
+                                            choice = "0";
+                                            Console.Clear();
                                             break;
                                         }
                                         if (choice == "2")
                                         {
+                                            choice = "0";
                                             leave = true;
                                         }
                                     }
@@ -381,6 +446,8 @@ while (!bankrupt)
                     //Snake eyes roulette
                     if (choice == "2")
                     {
+                        Console.Clear();
+
                         Console.WriteLine("Feeling lucky are we?");
                         while (!leave)
                         {
@@ -453,6 +520,7 @@ while (!bankrupt)
                             choice = "0";
                             Console.WriteLine();
                             Console.WriteLine("How many souls would you like to bet?");
+                            Console.WriteLine("You currently have " + wallet + " fragmented souls on hand");
                             Console.WriteLine();
                             while (!leave)
                             {
@@ -478,66 +546,159 @@ while (!bankrupt)
                                         Console.WriteLine("Spinning...");
                                         Console.ReadLine();
                                         // The first wheel spin
-                                        randNum = rand.Next(0, 37);
-                                        if (randNum < 19 && randNum > 0)
+                                        // Checking if user has drank and applying bonuses
+                                        if (drunkTime > 0)
+                                        {
+                                            Console.WriteLine();
+                                            Console.WriteLine("You feel slightly tipsy, and slighty lucky");
+                                            if (betBlack)
+                                            {
+                                                randNum = rand.Next(0, 37);
+                                                if (!black.Contains(randNum))
+                                                {
+                                                    randNum = rand.Next(0, 37);
+                                                }
+                                            }
+                                            else if (betRed)
+                                            {
+                                                randNum = rand.Next(0, 37);
+                                                if (!red.Contains(randNum))
+                                                {
+                                                    randNum = rand.Next(0, 37);
+                                                }
+                                            }
+                                            else if (odd)
+                                            {
+                                                randNum = rand.Next(0, 37);
+                                                if (randNum % 2 == 0)
+                                                {
+                                                    randNum = rand.Next(0, 37);
+                                                }
+                                            }
+                                            else if (even)
+                                            {
+                                                randNum = rand.Next(0, 37);
+                                                if (randNum % 2 != 0)
+                                                {
+                                                    randNum = rand.Next(0, 37);
+                                                }
+                                            }
+                                            else if (green)
+                                            {
+                                                randNum = rand.Next(0, 37);
+                                                if (randNum != 0)
+                                                {
+                                                    randNum = rand.Next(0, 37);
+                                                }
+                                            }
+                                            else if (single)
+                                            {
+                                                randNum = rand.Next(0, 37);
+                                                if (betNum != randNum)
+                                                {
+                                                    randNum = rand.Next(0, 37);
+                                                }
+                                            }
+                                        }
+                                        else
+                                        {
+                                            randNum = rand.Next(0, 37);
+                                        }
+                                        if (red.Contains(randNum))
                                         {
                                             rColor = "red";
+                                            rouletteNum = randNum;
                                         }
                                         else if (randNum == 0)
                                         {
                                             rColor = "green";
+                                            rouletteNum = 0;
                                         }
                                         else
                                         {
                                             rColor = "black";
-                                        }
-                                        if (rColor.Equals("red"))
-                                        {
-                                            randNum = rand.Next(0, red.Length + 1);
-                                            rouletteNum = red[randNum];
-                                        }
-                                        else if (rColor.Equals("black"))
-                                        {
-                                            randNum = rand.Next(0, black.Length + 1);
-                                            rouletteNum = black[randNum];
-                                        }
-                                        else
-                                        {
-                                            rouletteNum = 0;
+                                            rouletteNum = randNum;
                                         }
 
                                         // The second wheel spin
-                                        randNum = rand.Next(0, 37);
-                                        if (randNum < 19 && randNum > 0)
+                                        if (drunkTime > 0)
+                                        {
+                                            drunkTime -= 1;
+                                            if (betBlack)
+                                            {
+                                                randNum = rand.Next(0, 37);
+                                                if (!black.Contains(randNum))
+                                                {
+                                                    randNum = rand.Next(0, 37);
+                                                }
+                                            }
+                                            else if (betRed)
+                                            {
+                                                randNum = rand.Next(0, 37);
+                                                if (!red.Contains(randNum))
+                                                {
+                                                    randNum = rand.Next(0, 37);
+                                                }
+                                            }
+                                            else if (odd)
+                                            {
+                                                randNum = rand.Next(0, 37);
+                                                if (randNum % 2 == 0)
+                                                {
+                                                    randNum = rand.Next(0, 37);
+                                                }
+                                            }
+                                            else if (even)
+                                            {
+                                                randNum = rand.Next(0, 37);
+                                                if (randNum % 2 != 0)
+                                                {
+                                                    randNum = rand.Next(0, 37);
+                                                }
+                                            }
+                                            else if (green)
+                                            {
+                                                randNum = rand.Next(0, 37);
+                                                if (randNum != 0)
+                                                {
+                                                    randNum = rand.Next(0, 37);
+                                                }
+                                            }
+                                            else if (single)
+                                            {
+                                                randNum = rand.Next(0, 37);
+                                                if (betNum != randNum)
+                                                {
+                                                    randNum = rand.Next(0, 37);
+                                                }
+                                            }
+                                        }
+                                        else
+                                        {
+                                            randNum = rand.Next(0, 37);
+                                        }
+                                        if (red.Contains(randNum))
                                         {
                                             rColor2 = "red";
+                                            rouletteNum2 = randNum;
                                         }
                                         else if (randNum == 0)
                                         {
                                             rColor2 = "green";
+                                            rouletteNum2 = 0;
                                         }
                                         else
                                         {
                                             rColor2 = "black";
+                                            rouletteNum2 = randNum;
                                         }
-                                        if (rColor2.Equals("red"))
-                                        {
-                                            randNum = rand.Next(0, red.Length);
-                                            rouletteNum2 = red[randNum];
-                                        }
-                                        else if (rColor2.Equals("black"))
-                                        {
-                                            randNum = rand.Next(0, black.Length);
-                                            rouletteNum2 = black[randNum];
-                                        }
-                                        else
-                                        {
-                                            rouletteNum2 = 0;
-                                        }
+                                        Thread.Sleep(1000);
                                         Console.WriteLine(rouletteNum);
                                         Console.WriteLine(rColor);
                                         Console.WriteLine();
+                                        Thread.Sleep(1000);
                                         Console.WriteLine("And");
+                                        Thread.Sleep(1000);
                                         Console.WriteLine();
                                         Console.WriteLine(rouletteNum2);
                                         Console.WriteLine(rColor2);
@@ -551,7 +712,7 @@ while (!bankrupt)
                                                 mult = evenMult * evenMult;
                                             }
                                         }
-                                        if (odd)
+                                        else if (odd)
                                         {
                                             if (rouletteNum % 2 != 0 && rouletteNum != 0 && rouletteNum2 % 2 != 0 && rouletteNum2 != 0)
                                             {
@@ -560,7 +721,7 @@ while (!bankrupt)
                                             }
 
                                         }
-                                        if (betRed)
+                                        else if (betRed)
                                         {
                                             if (rColor == "red" && rColor2 == "red")
                                             {
@@ -568,7 +729,7 @@ while (!bankrupt)
                                                 mult = redMult * redMult;
                                             }
                                         }
-                                        if (betBlack)
+                                        else if (betBlack)
                                         {
                                             if (rColor == "black" && rColor2 == "black")
                                             {
@@ -576,7 +737,7 @@ while (!bankrupt)
                                                 mult = blackMult * blackMult;
                                             }
                                         }
-                                        if (single)
+                                        else if (single)
                                         {
                                             if (betNum == rouletteNum && betNum == rouletteNum2)
                                             {
@@ -584,7 +745,7 @@ while (!bankrupt)
                                                 mult = numMult * numMult;
                                             }
                                         }
-                                        if (green)
+                                        else if (green)
                                         {
                                             if (rColor == "green" && rColor2 == "green")
                                             {
@@ -639,10 +800,12 @@ while (!bankrupt)
                                         }
                                         if (choice == "1")
                                         {
+                                            choice = "0";
                                             break;
                                         }
                                         if (choice == "2")
                                         {
+                                            choice = "0";
                                             leave = true;
                                         }
                                     }
@@ -681,12 +844,19 @@ while (!bankrupt)
                     }
                 }
             }
+            else if (choice == "2")
+            {
+                choice = "0";
+                leave = true;
+            }
         }
     }
     leave = false;
     // Account managing
     if (choice == "2")
     {
+        Console.Clear();
+
         Console.WriteLine("'Welcome to the account managing'");
         Console.WriteLine("'Would you like to make a deposit?'");
         Console.WriteLine("You currently have " + wallet + " fragmented souls on hand");
@@ -709,6 +879,8 @@ while (!bankrupt)
         }
         if (choice == "1")
         {
+            Console.Clear();
+
             while (!leave)
             {
                 Console.WriteLine("'How much would you like to deposit?'");
@@ -726,6 +898,7 @@ while (!bankrupt)
                     wallet -= bankInput;
                     account += bankInput;
                     Console.WriteLine("'You have successfully made a deposit of " + bankInput + " fragmented souls'");
+                    Thread.Sleep(1000);
                     break;
                 }
                 else if (bankInput == 0)
@@ -741,8 +914,10 @@ while (!bankrupt)
                 }
             }
         }
-        if (choice == "2")
+        else if (choice == "2")
         {
+            Console.Clear();
+
             while (!leave)
             {
                 Console.WriteLine("'How much would you like to withdraw?'");
@@ -760,6 +935,7 @@ while (!bankrupt)
                     wallet += bankInput;
                     account -= bankInput;
                     Console.WriteLine("'You have successfully made a withrawal of " + bankInput + " fragmented souls'");
+                    Thread.Sleep(1000);
                     break;
                 }
                 else if (bankInput == 0)
@@ -777,39 +953,23 @@ while (!bankrupt)
         }
         if (choice == "3")
         {
-            /*
+            
             while (!leave)
             {
-                Console.WriteLine("'How much would you like to deposit?'");
+                Console.WriteLine("Loans are a mechanic meant to help you if you're ever in the situation of almost going bankrupt");
+                Console.WriteLine("You pay off your loans here at the bank, and the loans only last the set amount of time given on them");
+                Console.WriteLine("If you pay your loan off before the due time you only need to pay what the loan has amounted to then");
+                Console.WriteLine("But be wary, if you don't pay them off in time you will be punished for it, and harshly at that");
                 Console.WriteLine();
-                try
-                {
-                    bankInput = Convert.ToInt32(Console.ReadLine());
-                }
-                catch
-                {
-                    Console.WriteLine("'You know you can only deposit souls, right?'");
-                }
-                if (bankInput > 0 && bankInput <= wallet)
-                {
-                    wallet -= bankInput;
-                    account += bankInput;
-                    Console.WriteLine("'You have successfully made a deposit of " + bankInput + "' fragmented souls'");
-                    break;
-                }
-                else if (bankInput == 0)
-                {
-                    Console.WriteLine("You regret your decisions last minute and leave");
-                    Console.WriteLine();
-                    break;
-                }
-                else
-                {
-                    Console.WriteLine("'You do know that this is an impossible amount considering your current balance, right?'");
-                    Console.WriteLine();
-                }
+                Console.WriteLine("'Which loan do you want?'");
+                Console.WriteLine();
+                Console.WriteLine("1. 100 souls, + 5% interest for every roulette game, up to 5 games");
+                Console.WriteLine("2. 150 souls, + 5% interest for every roulette game, up to 6 games");
+                Console.WriteLine("3. 200 souls, + 5% interest for every roulette game, up to 7 games");
+                Console.WriteLine("4. Pay your current loan of " + loan + " back");
+                Console.WriteLine("5. Go back");
+
             }
-            */
         }
         if (choice == "4")
         {
@@ -822,6 +982,10 @@ while (!bankrupt)
     // The bar
     if (choice == "3")
     {
+        Console.Clear();
+
+        Console.WriteLine("A crazed demon stands at the neat looking minibar in the middle of the casino");
+        Console.WriteLine();
         Console.WriteLine("'Welcome to the bar my lost friend, could I perhaps influence you with a drink?'");
         choice = "0";
         while(!leave) {
@@ -840,16 +1004,18 @@ while (!bankrupt)
             while (!leave) {
                 if (choice == "1")
                 {
+                    Console.Clear();
+
                     choice = "0";
-                    Console.WriteLine();
-                    Console.WriteLine("Its red face starts turning and twisting into a wicked smile");
+                    Console.WriteLine("His red face starts turning and twisting into a wicked smile");
                     Console.WriteLine();
                     Console.WriteLine("'So, what can I get for you?'");
+                    Console.WriteLine("You currently have " + wallet + " fragmented souls on hand");
                     while (choice != "1" && choice != "2" && choice != "3" && choice != "4" && choice != "5" && choice != "6")
                     {
                         Console.WriteLine();
                         Console.WriteLine("1. Boiled blood, 3 souls");
-                        Console.WriteLine("2. Marrow margherita, 5 souls");
+                        Console.WriteLine("2. Marrow margarita, 5 souls");
                         Console.WriteLine("3. Locust special, 10 souls");
                         Console.WriteLine("4. Arsenic shot, 20 souls");
                         Console.WriteLine("5. Cold desire, 50 souls");
@@ -863,31 +1029,121 @@ while (!bankrupt)
                     Console.WriteLine("");
                     if (choice == "1")
                     {
+                        Console.Clear();
+
                         choice = "0";
+                        if (wallet > 3)
+                        {
+                            Console.WriteLine("'Coming right up!'");
+                            Console.WriteLine();
+                            wallet -= 3;
+                            Console.WriteLine("In a flurry of different bottles and ice cubes, the demon shakes up a vicious cocktail sporting a deep red color with lines of black inside");
+                            Console.WriteLine("'I hope you enjoy it!' He says with a deeply unsetteling smile");
+                            Console.WriteLine("...");
+                            Console.WriteLine("Tastes like iron");
+                            if (drunkTime < 1)
+                            {
+                                drunkTime = 1;
+                            }
+                        }
                     }
-                    if (choice == "2")
+                    else if (choice == "2")
                     {
+                        Console.Clear();
+
                         choice = "0";
+                        if (wallet > 5)
+                        {
+                            Console.WriteLine("'Coming right up!'");
+                            Console.WriteLine();
+                            wallet -= 5;
+                            Console.WriteLine("In a flurry of different bottles and ice cubes, the demon shakes up a abominable drink with a pinkish red blend of colors");
+                            Console.WriteLine("'I hope you enjoy it!' He says with a deeply unsetteling smile");
+                            Console.WriteLine("...");
+                            Console.WriteLine("Yum, strawberries");
+                            if (drunkTime < 2)
+                            {
+                                drunkTime = 2;
+                            }
+                        }
                     }
-                    if (choice == "3")
+                    else if (choice == "3")
                     {
+                        Console.Clear();
+
                         choice = "0";
+                        if (wallet > 10)
+                        {
+                            Console.WriteLine("'Coming right up!'");
+                            Console.WriteLine();
+                            wallet -= 10;
+                            Console.WriteLine("In a flurry of different bottles and ice cubes, the demon shakes up a vomit green colored drink with a horrible smell");
+                            Console.WriteLine("'I hope you enjoy it!' He says with a deeply unsetteling smile");
+                            Console.WriteLine("...");
+                            Console.WriteLine("Yuck, thick with lumps");
+                            if (drunkTime < 4)
+                            {
+                                drunkTime = 4;
+                            }
+                        }
                     }
-                    if (choice == "4")
+                    else if (choice == "4")
                     {
+                        Console.Clear();
+
                         choice = "0";
+                        if (wallet > 20)
+                        {
+                            Console.WriteLine("'Coming right up!'");
+                            Console.WriteLine();
+                            wallet -= 20;
+                            Console.WriteLine("In a flurry of different bottles and ice cubes, the demon pours up a tiny amount of what looks like liquid mercury in a shotglass");
+                            Console.WriteLine("'I hope you enjoy it!' He says with a deeply unsetteling smile");
+                            Console.WriteLine("...");
+                            Console.WriteLine("At least it cleared my headache");
+                            if(drunkTime < 8)
+                            {
+                            drunkTime = 8;
+                            }
+                        }
                     }
-                    if (choice == "5")
+                    else if (choice == "5")
                     {
+                        Console.Clear();
+
                         choice = "0";
+                        if (wallet > 50)
+                        {
+                            Console.WriteLine("'Coming right up!'");
+                            Console.WriteLine();
+                            wallet -= 50;
+                            Console.WriteLine("In a flurry of different bottles and ice cubes, the demon shakes up a highly attractive mix between blue and purple");
+                            Console.WriteLine("Just looking at it gives you chills");
+                            Console.WriteLine("'I hope you enjoy it!' He says with a deeply unsetteling smile");
+                            Console.WriteLine("...");
+                            Console.WriteLine("Minty fresh breath");
+                            if (drunkTime < 20)
+                            {
+                                drunkTime = 20;
+                            }
+                        }
                     }
-                    if (choice == "6")
+                    else if (choice == "6")
                     {
+                        Console.Clear();
+
                         choice = "0";
+                        if (wallet > 0)
+                        {
+                            Console.WriteLine("With a face of disappointment, the demon grabs a bottle of water from a small freezer in the corner and gives it to you");
+                            Console.WriteLine("...");
+                            Console.WriteLine("Refreshing");
+                        }
                     }
+                    break;
 
                 }
-                if (choice == "2")
+                else if (choice == "2")
                 {
                     choice = "0";
                     Console.WriteLine();
@@ -895,14 +1151,14 @@ while (!bankrupt)
                     Console.WriteLine();
                     leave = true;
                 }
-                if (choice == "3")
+                else if (choice == "3")
                 {
                     // Choosing tips to tell to the user
                     choice = "0";
                     randNum = rand.Next(0, gossip.Length);
-                    Console.WriteLine("Its small pupils start dotting around the room");
+                    Console.WriteLine("His small pupils start dotting around the room");
                     Console.WriteLine();
-                    Console.WriteLine("'This is just something I've heard from our guests here, but I heard that " + gossip[randNum] + "'");
+                    Console.WriteLine("'" + gossip[randNum] + "'");
                     Console.WriteLine();
                     randNum = -1;
                     break;
