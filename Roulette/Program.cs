@@ -19,7 +19,7 @@ int loan = 0;
 int loanTime = 0;
 bool loanActive = false;
 int drunkTime = 0;
-string[] gossip = {"I heard that someone got extremely wasted on boiled blood and marrow margaritas and then went and won twice as often at the roulette table" , "Apparently someone died after downing five straight shots of arsenic. That sounds like total bull, of course" ,  };
+string[] gossip = {"I heard that someone got slammed down boiled blood and marrow margaritas and then went and won all night long at the roulette table" , "Apparently someone died after downing five straight shots of arsenic. That sounds like total bull, of course" ,  "Apparently, according to something that I've heard from a friend of a friend, the imp at the reception has a special code that only vips are allowed to use"};
 string choice = "";
 string deny = "There is no such choice";
 string rColor = "";
@@ -28,6 +28,7 @@ int bankInput = 0;
 bool bankrupt = false;
 bool snakeEyes = false;
 bool leave = false;
+bool hasLoan = false;
 int[] red = { 32, 19, 21, 25, 34, 27, 36, 30, 23, 5, 16, 1, 14, 9, 18, 7, 12, 3 };
 int[] black = { 15, 4, 2, 17, 6, 13, 11, 8, 10, 24, 33, 20, 31, 22, 29, 28, 35, 26 };
 int greenMult = 36;
@@ -39,6 +40,8 @@ int numMult = 36;
 int betNum = 0;
 int mult = 1;
 int payOut = 0;
+int payTotal = 0;
+int lossTotal = 0;
 
 int randNum = -1;
 int rouletteNum2 = -1;
@@ -51,6 +54,7 @@ bool even = false;
 bool odd = false;
 bool green = false;
 bool win = false;
+bool secret = false;
 Random rand = new Random();
 
 // The game
@@ -63,9 +67,11 @@ Console.WriteLine("You have to gamble your way from 100 fragmented souls to 10 0
 Console.WriteLine("If you manage this you are to be let go and freed");
 Console.WriteLine("However, if you are to fail, you shall repent for a thousand years");
 Console.WriteLine();
+Console.WriteLine("PRESS ANY BUTTON TO CONTINUE");
+Console.ReadKey();
 
 // Game loop
-while (!bankrupt)
+while (!bankrupt && loanTime >= 0)
 {
     Console.Clear();
 
@@ -74,27 +80,75 @@ while (!bankrupt)
     Console.WriteLine("A little imp bearing a luxurious tuxedo is situated at the front desk");
     Console.WriteLine("'Hello and welcome to Lucifers!'");
     Console.WriteLine("'What would you like to do?'");
+    if (hasLoan)
+    {
+        Console.WriteLine("You currently have an active loan of " + loan + " souls with " + loanTime + " rounds left");
+    }
+    else
+    {
+        Console.WriteLine("You currently don't have an active loan");
+    }
     Console.WriteLine("You currently have " + wallet + " fragmented souls on hand");
     Console.WriteLine("and " + account + " fragmented souls in your account");
 
-    while (choice != "1" && choice != "2" && choice != "3")
+    while (choice != "1" && choice != "2" && choice != "3" && choice != "13")
     {
         Console.WriteLine();
         Console.WriteLine("1. Go to the roulette table");
         Console.WriteLine("2. Go to account management");
         Console.WriteLine("3. Go to the bar");
         choice = Console.ReadLine();
-        if (choice != "1" && choice != "2" && choice != "3")
+        if (choice != "1" && choice != "2" && choice != "3" && choice != "13")
         {
             Console.WriteLine(deny);
         }
+    }
+    // Secret
+    if (choice == "13" && !secret)
+    {
+        choice = "0";
+        Console.WriteLine();
+        Console.WriteLine("His eyebrows start shifting a little");
+        while (choice != "1" && choice != "2" && choice != "3")
+        {
+            choice = Console.ReadLine();
+            if (choice != "1" && choice != "2" && choice != "3")
+            {
+                break;
+            }
+        }
+        if (choice == "666")
+        {
+            choice = "0";
+            secret = true;
+            Console.WriteLine();
+            Console.WriteLine("His pupils widen");
+            Console.WriteLine("'Here you are'");
+            Console.WriteLine("He gives you a small bottle that with a lable written in a language you can't understand");
+            Console.WriteLine("The only thing you can somewhat read is a tiny number in the bottom left corner");
+            Console.WriteLine("Looks to be... 99% alcohol?");
+            Console.WriteLine("Sweet!");
+            Console.WriteLine("...");
+            Thread.Sleep(10000);
+            Console.WriteLine("Damn, everything you can see has a identical twin of an identical twin");
+            Thread.Sleep(3000);
+            drunkTime = int.MaxValue;
+        }
+        else
+        {
+            Console.WriteLine();
+            Console.WriteLine("The imp starts snickering at you");
+            Console.WriteLine("'You don't seem to really know what you are doing'");
+            Thread.Sleep(5000);
+        }
+        continue;
     }
     // The roulette table
     if (choice == "1")
     {
         Console.Clear();
-
-        Console.WriteLine("");
+        Console.WriteLine("A man cast in a dark silhouette stands at the table");
+        Console.WriteLine("A weird heat is emenating from him");
         Console.WriteLine("'Welcome to the roulette table'");
         while (!leave)
         {
@@ -141,8 +195,6 @@ while (!bankrupt)
                     if (choice == "1")
                     {
                         Console.Clear();
-
-                        Console.WriteLine();
                         Console.WriteLine("Time to play");
                         while (!leave)
                         {
@@ -213,26 +265,31 @@ while (!bankrupt)
                             }
 
                             choice = "0";
-                            Console.WriteLine();
-                            Console.WriteLine("How many souls would you like to bet?");
-                            Console.WriteLine("You currently have " + wallet + " fragmented souls on hand");
-                            Console.WriteLine();
                             while (!leave)
                             {
                                 while (true)
                                 {
                                     try
                                     {
+                                        Console.WriteLine();
+                                        Console.WriteLine("'How many souls would you like to bet?'");
+                                        Console.WriteLine("You currently have " + wallet + " fragmented souls on hand");
+                                        if (hasLoan)
+                                        {
+                                            Console.WriteLine("And an active loan of " + loan + " souls with a time of " + loanTime + " left");
+                                        }
                                         bet = Convert.ToInt32(Console.ReadLine());
                                         break;
                                     }
                                     catch
                                     {
+                                        Console.WriteLine();
                                         Console.WriteLine("'You know you can only bet souls, right?'");
                                     }
                                 }
                                 if (bet > 0 && bet <= wallet)
                                 {
+                                    Console.WriteLine();
                                     Console.WriteLine("'You have successfully made a bet of " + bet + " fragmented souls'");
                                     // Spin
                                     {
@@ -297,11 +354,6 @@ while (!bankrupt)
                                             Console.WriteLine("You're more sober than a rock");
                                             randNum = rand.Next(0, 37);
                                         }
-                                        Console.WriteLine();
-                                        Console.WriteLine("'Initiate the spin, my lucky fellow'");
-                                        Console.ReadKey();
-                                        Console.WriteLine("Spinning...");
-                                        Console.ReadKey();
                                         if (red.Contains(randNum))
                                         {
                                             rColor = "red";
@@ -314,10 +366,23 @@ while (!bankrupt)
                                         {
                                             rColor = "black";
                                         }
+                                        Console.WriteLine();
+                                        Console.WriteLine("'Initiate the spin, my lucky fellow'");
+                                        Console.WriteLine();
+                                        Console.ReadKey();
+                                        Console.Write("Spinning");
+                                        Thread.Sleep(500);
+                                        Console.Write(".");
+                                        Thread.Sleep(500);
+                                        Console.Write(".");
+                                        Thread.Sleep(500);
+                                        Console.WriteLine(".");
+                                        Thread.Sleep(500);
                                         rouletteNum = randNum;
-                                        Thread.Sleep(1000);
+                                        Console.WriteLine();
                                         Console.WriteLine(rouletteNum);
                                         Console.WriteLine(rColor);
+                                        Thread.Sleep(1000);
 
                                         // Checking what user has bet on
                                         if (even)
@@ -379,6 +444,7 @@ while (!bankrupt)
                                             Console.WriteLine("You have won " + (payOut) + " fragmented souls");
                                             Console.WriteLine();
                                             wallet += payOut;
+                                            payTotal += payOut;
                                         }
                                         else
                                         {
@@ -387,6 +453,12 @@ while (!bankrupt)
                                             Console.WriteLine("You have lost " + bet + " fragmented souls");
                                             Console.WriteLine();
                                             wallet -= bet;
+                                            lossTotal += bet;
+                                        }
+                                        if (hasLoan)
+                                        {
+                                            loanTime -= 1;
+                                            loan += loan/20;
                                         }
 
                                         single = false;
@@ -399,10 +471,22 @@ while (!bankrupt)
                                         mult = 0;
                                         payOut = 0;
                                         bet = 0;
+                                        if (wallet <= 0 || loanTime < 0)
+                                        {
+                                            Console.WriteLine("You suddenly feel the ground under your feet getting softer");
+                                            Console.WriteLine("Before you realize you are sinking under the ground, and any resistance would be futile");
+                                            Thread.Sleep(3000);
+                                            leave = true;
+                                            continue;
+                                        }
 
                                         Console.WriteLine("'Would you like to play again?'");
                                         Console.WriteLine();
                                         Console.WriteLine("You currently have " + wallet + " fragmented souls on hand");
+                                        if (hasLoan) 
+                                        {
+                                        Console.WriteLine("And an active loan of " + loan + " souls with a time of " + loanTime + " left");
+                                        }
                                         while (choice != "1" && choice != "2")
                                         {
                                             Console.WriteLine();
@@ -417,6 +501,7 @@ while (!bankrupt)
                                         if (choice == "1")
                                         {
                                             choice = "0";
+                                            Thread.Sleep(200);
                                             Console.Clear();
                                             break;
                                         }
@@ -433,6 +518,7 @@ while (!bankrupt)
                                     Console.WriteLine();
                                     Console.WriteLine("You coward");
                                     Console.WriteLine();
+                                    Thread.Sleep(1000);
                                     leave = true;
                                 }
                                 else
@@ -447,7 +533,6 @@ while (!bankrupt)
                     if (choice == "2")
                     {
                         Console.Clear();
-
                         Console.WriteLine("Feeling lucky are we?");
                         while (!leave)
                         {
@@ -518,33 +603,35 @@ while (!bankrupt)
                             }
 
                             choice = "0";
-                            Console.WriteLine();
-                            Console.WriteLine("How many souls would you like to bet?");
-                            Console.WriteLine("You currently have " + wallet + " fragmented souls on hand");
-                            Console.WriteLine();
                             while (!leave)
                             {
                                 while (true)
                                 {
                                     try
                                     {
+                                        Console.WriteLine();
+                                        Console.WriteLine("How many souls would you like to bet?");
+                                        Console.WriteLine("You currently have " + wallet + " fragmented souls on hand");
+                                        if (hasLoan)
+                                        {
+                                            Console.WriteLine("And an active loan of " + loan + " souls with a time of " + loanTime + " left");
+                                        }
                                         bet = Convert.ToInt32(Console.ReadLine());
                                         break;
                                     }
                                     catch
                                     {
+                                        Console.WriteLine();
                                         Console.WriteLine("'You know you can only bet souls, right?'");
                                     }
                                 }
                                 if (bet > 0 && bet <= wallet)
                                 {
+                                    Console.WriteLine();
                                     Console.WriteLine("'You have successfully made a bet of " + bet + " fragmented souls'");
                                     {
                                         Console.WriteLine();
                                         Console.WriteLine("'Initiate the spin, my lucky fellow'");
-                                        Console.ReadLine();
-                                        Console.WriteLine("Spinning...");
-                                        Console.ReadLine();
                                         // The first wheel spin
                                         // Checking if user has drank and applying bonuses
                                         if (drunkTime > 0)
@@ -692,7 +779,16 @@ while (!bankrupt)
                                             rColor2 = "black";
                                             rouletteNum2 = randNum;
                                         }
-                                        Thread.Sleep(1000);
+                                        Console.WriteLine();
+                                        Console.ReadKey();
+                                        Console.Write("Spinning");
+                                        Thread.Sleep(500);
+                                        Console.Write(".");
+                                        Thread.Sleep(500);
+                                        Console.Write(".");
+                                        Thread.Sleep(500);
+                                        Console.WriteLine(".");
+                                        Thread.Sleep(500);
                                         Console.WriteLine(rouletteNum);
                                         Console.WriteLine(rColor);
                                         Console.WriteLine();
@@ -702,6 +798,7 @@ while (!bankrupt)
                                         Console.WriteLine();
                                         Console.WriteLine(rouletteNum2);
                                         Console.WriteLine(rColor2);
+                                        Thread.Sleep(1000);
 
                                         // Checking what user has bet on
                                         if (even)
@@ -763,6 +860,7 @@ while (!bankrupt)
                                             Console.WriteLine("You have won " + (payOut) + " fragmented souls");
                                             Console.WriteLine();
                                             wallet += payOut;
+                                            payTotal += payOut;
                                         }
                                         else
                                         {
@@ -771,6 +869,13 @@ while (!bankrupt)
                                             Console.WriteLine("You have lost " + bet + " fragmented souls");
                                             Console.WriteLine();
                                             wallet -= bet;
+                                            lossTotal += bet;
+                                        }
+
+                                        if (hasLoan)
+                                        {
+                                            loanTime -= 1;
+                                            loan += loan / 20;
                                         }
 
                                         single = false;
@@ -784,9 +889,22 @@ while (!bankrupt)
                                         payOut = 0;
                                         bet = 0;
 
+                                        if (wallet <= 0 || loanTime < 0)
+                                        {
+                                            Console.WriteLine("You suddenly feel the ground under your feet getting softer");
+                                            Console.WriteLine("Before you realize you are sinking under the ground, and any resistance would be futile");
+                                            Thread.Sleep(3000);
+                                            leave = true;
+                                            continue;
+                                        }
+
                                         Console.WriteLine("'Would you like to play again?'");
                                         Console.WriteLine();
                                         Console.WriteLine("You currently have " + wallet + " fragmented souls on hand");
+                                        if (hasLoan)
+                                        {
+                                            Console.WriteLine("And an active loan of " + loan + " souls with a time of " + loanTime + " left");
+                                        }
                                         while (choice != "1" && choice != "2")
                                         {
                                             Console.WriteLine();
@@ -801,6 +919,7 @@ while (!bankrupt)
                                         if (choice == "1")
                                         {
                                             choice = "0";
+                                            Console.Clear();
                                             break;
                                         }
                                         if (choice == "2")
@@ -812,14 +931,16 @@ while (!bankrupt)
                                 }
                                 else if (bet == 0)
                                 {
+                                    Console.WriteLine();
                                     Console.WriteLine("You regret your decisions last minute and leave");
                                     Console.WriteLine();
                                     Console.WriteLine("You coward");
-                                    Console.WriteLine();
+                                    Thread.Sleep(1000);
                                     leave = true;
                                 }
                                 else
                                 {
+                                    Console.WriteLine();
                                     Console.WriteLine("'You do know that this is an impossible amount considering your current balance, right?'");
                                     Console.WriteLine();
                                 }
@@ -829,6 +950,7 @@ while (!bankrupt)
                                 Console.WriteLine();
                                 Console.WriteLine("You coward");
                                 Console.WriteLine();
+                                Thread.Sleep(1000);
                                 leave = true;
                             }
 
@@ -839,6 +961,7 @@ while (!bankrupt)
                         Console.WriteLine();
                         Console.WriteLine("You coward");
                         Console.WriteLine();
+                        Thread.Sleep(1000);
                         choice = "0";
                         leave = true;
                     }
@@ -856,7 +979,9 @@ while (!bankrupt)
     if (choice == "2")
     {
         Console.Clear();
-
+        Console.WriteLine("A beast with an unnerving stare stands besides the sign reading 'Accounts and loans'");
+        Console.WriteLine("Without blinking once the creature starts looking at you and stares for a couple seconds");
+        Console.WriteLine("Suddenly the eyes snap to a point behind you, and its mouth starts moving");
         Console.WriteLine("'Welcome to the account managing'");
         Console.WriteLine("'Would you like to make a deposit?'");
         Console.WriteLine("You currently have " + wallet + " fragmented souls on hand");
@@ -883,34 +1008,37 @@ while (!bankrupt)
 
             while (!leave)
             {
-                Console.WriteLine("'How much would you like to deposit?'");
-                Console.WriteLine();
                 try
                 {
+                    Console.WriteLine();
+                    Console.WriteLine("'How much would you like to deposit?'");
                     bankInput = Convert.ToInt32(Console.ReadLine());
                 }
                 catch
                 {
+                    Console.WriteLine();
                     Console.WriteLine("'You know you can only deposit souls, right?'");
+                    continue;
                 }
                 if (bankInput > 0 && bankInput <= wallet)
                 {
                     wallet -= bankInput;
                     account += bankInput;
+                    Console.WriteLine();
                     Console.WriteLine("'You have successfully made a deposit of " + bankInput + " fragmented souls'");
                     Thread.Sleep(1000);
                     break;
                 }
                 else if (bankInput == 0)
                 {
-                    Console.WriteLine("You regret your decisions last minute and leave");
                     Console.WriteLine();
+                    Console.WriteLine("You regret your decisions last minute and leave");
                     leave = true;
                 }
                 else
                 {
-                    Console.WriteLine("'You do know that this is an impossible amount considering your current balance, right?'");
                     Console.WriteLine();
+                    Console.WriteLine("'You do know that this is an impossible amount considering your current balance, right?'");
                 }
             }
         }
@@ -920,63 +1048,152 @@ while (!bankrupt)
 
             while (!leave)
             {
-                Console.WriteLine("'How much would you like to withdraw?'");
-                Console.WriteLine();
                 try
                 {
+                    Console.WriteLine();
+                    Console.WriteLine("'How much would you like to withdraw?'");
                     bankInput = Convert.ToInt32(Console.ReadLine());
                 }
                 catch
                 {
+                    Console.WriteLine();
                     Console.WriteLine("'You know you can only withdraw souls, right?'");
+                    continue;
                 }
                 if (bankInput > 0 && bankInput <= account)
                 {
                     wallet += bankInput;
                     account -= bankInput;
+                    Console.WriteLine();
                     Console.WriteLine("'You have successfully made a withrawal of " + bankInput + " fragmented souls'");
                     Thread.Sleep(1000);
                     break;
                 }
                 else if (bankInput == 0)
                 {
-                    Console.WriteLine("You regret your decisions last minute and leave");
                     Console.WriteLine();
+                    Console.WriteLine("You regret your decisions last minute and leave");
                     leave = true;
                 }
                 else
                 {
-                    Console.WriteLine("'You do know that this is an impossible amount considering your current balance, right?'");
                     Console.WriteLine();
+                    Console.WriteLine("'You do know that this is an impossible amount considering your current balance, right?'");
                 }
             }
         }
         if (choice == "3")
         {
-            
+            choice = "0";
+            Console.Clear();
             while (!leave)
             {
                 Console.WriteLine("Loans are a mechanic meant to help you if you're ever in the situation of almost going bankrupt");
-                Console.WriteLine("You pay off your loans here at the bank, and the loans only last the set amount of time given on them");
+                Console.WriteLine("You pay off your loans here, and the loans only last the set amount of time given on them");
                 Console.WriteLine("If you pay your loan off before the due time you only need to pay what the loan has amounted to then");
                 Console.WriteLine("But be wary, if you don't pay them off in time you will be punished for it, and harshly at that");
-                Console.WriteLine();
-                Console.WriteLine("'Which loan do you want?'");
-                Console.WriteLine();
-                Console.WriteLine("1. 100 souls, + 5% interest for every roulette game, up to 5 games");
-                Console.WriteLine("2. 150 souls, + 5% interest for every roulette game, up to 6 games");
-                Console.WriteLine("3. 200 souls, + 5% interest for every roulette game, up to 7 games");
-                Console.WriteLine("4. Pay your current loan of " + loan + " back");
-                Console.WriteLine("5. Go back");
-
+                while (!leave)
+                {
+                    Console.WriteLine();
+                    Console.WriteLine("'Which loan do you want?'");
+                    Console.WriteLine();
+                    Console.WriteLine("1. 100 souls, + 5% interest for every roulette game, up to 5 games");
+                    Console.WriteLine("2. 150 souls, + 5% interest for every roulette game, up to 6 games");
+                    Console.WriteLine("3. 200 souls, + 5% interest for every roulette game, up to 7 games");
+                    Console.WriteLine("4. Pay your current loan of " + loan + " back");
+                    Console.WriteLine("5. Go back");
+                    while (choice != "1" && choice != "2" && choice != "3" && choice != "4" && choice != "5")
+                    {
+                        choice = Console.ReadLine();
+                        if (choice != "1" && choice != "2" && choice != "3" && choice != "4" && choice != "5")
+                        {
+                            Console.WriteLine(deny);
+                        }
+                    }
+                    if (choice == "1" || choice == "2" || choice == "3")
+                    {
+                        if (hasLoan)
+                        {
+                        choice = "0";
+                        Console.WriteLine("You already have a loan");
+                        Thread.Sleep(1000);
+                        leave = true;
+                        }
+                    }
+                    if (choice == "1" && !hasLoan)
+                    {
+                        choice = "0";
+                        hasLoan = true;
+                        loan = 100;
+                        loanTime = 5;
+                        Console.WriteLine();
+                        Console.WriteLine("You've successfully made a loan of " + loan + " fragmented souls");
+                        wallet += loan;
+                        Console.WriteLine("You now have " + wallet + " souls on hand");
+                        Console.WriteLine("You return to the lobby with some anxiety");
+                        Thread.Sleep(3000);
+                        leave = true;
+                    }
+                    else if (choice == "2" && !hasLoan)
+                    {
+                        choice = "0";
+                        hasLoan = true;
+                        loan = 150;
+                        loanTime = 6;
+                        Console.WriteLine();
+                        Console.WriteLine("You've successfully made a loan of " + loan + " fragmented souls");
+                        wallet += loan;
+                        Console.WriteLine("You now have " + wallet + " souls on hand");
+                        Console.WriteLine("You return to the lobby with some anxiety");
+                        Thread.Sleep(3000);
+                        leave = true;
+                    }
+                    else if (choice == "3" && !hasLoan)
+                    {
+                        choice = "0";
+                        hasLoan = true;
+                        loan = 200;
+                        loanTime = 7;
+                        Console.WriteLine();
+                        Console.WriteLine("You've successfully made a loan of " + loan + " fragmented souls");
+                        wallet += loan;
+                        Console.WriteLine("You now have " + wallet + " souls on hand");
+                        Console.WriteLine("You return to the lobby with some anxiety");
+                        Thread.Sleep(3000);
+                        leave = true;
+                    }
+                    else if (choice == "4")
+                    {
+                        choice = "0";
+                        if (hasLoan)
+                        {
+                            if(wallet > loan)
+                            {
+                                wallet -= loan;
+                                hasLoan = false;
+                                leave = true;
+                            }
+                            else
+                            {
+                                Console.WriteLine("You don't have enough money on hand to pay off your loan");
+                                continue;
+                            }
+                        }
+                        else
+                        {
+                            Console.WriteLine("You currently don't have an active loan");
+                            continue;
+                        }
+                    }
+                }
             }
         }
         if (choice == "4")
         {
+            choice = "0";
             Console.WriteLine("You return back to the lobby");
             leave = true;
         }
-
     }
     leave = false;
     // The bar
@@ -1007,7 +1224,7 @@ while (!bankrupt)
                     Console.Clear();
 
                     choice = "0";
-                    Console.WriteLine("His red face starts turning and twisting into a wicked smile");
+                    Console.WriteLine("His chilling face starts turning and twisting into a wicked smile");
                     Console.WriteLine();
                     Console.WriteLine("'So, what can I get for you?'");
                     Console.WriteLine("You currently have " + wallet + " fragmented souls on hand");
@@ -1039,7 +1256,9 @@ while (!bankrupt)
                             wallet -= 3;
                             Console.WriteLine("In a flurry of different bottles and ice cubes, the demon shakes up a vicious cocktail sporting a deep red color with lines of black inside");
                             Console.WriteLine("'I hope you enjoy it!' He says with a deeply unsetteling smile");
+                            Thread.Sleep(500);
                             Console.WriteLine("...");
+                            Thread.Sleep(500);
                             Console.WriteLine("Tastes like iron");
                             if (drunkTime < 1)
                             {
@@ -1059,7 +1278,9 @@ while (!bankrupt)
                             wallet -= 5;
                             Console.WriteLine("In a flurry of different bottles and ice cubes, the demon shakes up a abominable drink with a pinkish red blend of colors");
                             Console.WriteLine("'I hope you enjoy it!' He says with a deeply unsetteling smile");
+                            Thread.Sleep(500);
                             Console.WriteLine("...");
+                            Thread.Sleep(500);
                             Console.WriteLine("Yum, strawberries");
                             if (drunkTime < 2)
                             {
@@ -1079,7 +1300,9 @@ while (!bankrupt)
                             wallet -= 10;
                             Console.WriteLine("In a flurry of different bottles and ice cubes, the demon shakes up a vomit green colored drink with a horrible smell");
                             Console.WriteLine("'I hope you enjoy it!' He says with a deeply unsetteling smile");
+                            Thread.Sleep(500);
                             Console.WriteLine("...");
+                            Thread.Sleep(500);
                             Console.WriteLine("Yuck, thick with lumps");
                             if (drunkTime < 4)
                             {
@@ -1099,7 +1322,9 @@ while (!bankrupt)
                             wallet -= 20;
                             Console.WriteLine("In a flurry of different bottles and ice cubes, the demon pours up a tiny amount of what looks like liquid mercury in a shotglass");
                             Console.WriteLine("'I hope you enjoy it!' He says with a deeply unsetteling smile");
+                            Thread.Sleep(500);
                             Console.WriteLine("...");
+                            Thread.Sleep(500);
                             Console.WriteLine("At least it cleared my headache");
                             if(drunkTime < 8)
                             {
@@ -1120,7 +1345,9 @@ while (!bankrupt)
                             Console.WriteLine("In a flurry of different bottles and ice cubes, the demon shakes up a highly attractive mix between blue and purple");
                             Console.WriteLine("Just looking at it gives you chills");
                             Console.WriteLine("'I hope you enjoy it!' He says with a deeply unsetteling smile");
+                            Thread.Sleep(500);
                             Console.WriteLine("...");
+                            Thread.Sleep(500);
                             Console.WriteLine("Minty fresh breath");
                             if (drunkTime < 20)
                             {
@@ -1136,7 +1363,9 @@ while (!bankrupt)
                         if (wallet > 0)
                         {
                             Console.WriteLine("With a face of disappointment, the demon grabs a bottle of water from a small freezer in the corner and gives it to you");
+                            Thread.Sleep(500);
                             Console.WriteLine("...");
+                            Thread.Sleep(500);
                             Console.WriteLine("Refreshing");
                         }
                     }
@@ -1168,16 +1397,17 @@ while (!bankrupt)
     }
     sum = account + wallet;
     // Ending game if end conditions are met
-    if (sum <= 0)
+    if (sum <= 0 || loanTime < 0)
     {
         bankrupt = true;
         break;
     }
-    if (sum >= 10000)
+    if (sum >= 10000 && !hasLoan)
     {
         break;
     }
 }
+Console.Clear();
 // Deciding ending based on users accomplishments
 if (bankrupt)
 {
@@ -1197,3 +1427,6 @@ else
     Console.WriteLine();
     Console.WriteLine("YOU WIN");
 }
+// Game stats
+Console.WriteLine();
+Console.WriteLine("You won a total of " + payTotal + " souls and lost a total of " + lossTotal + " souls");
