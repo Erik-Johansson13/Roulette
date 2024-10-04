@@ -149,6 +149,7 @@ while (!bankrupt && loanTime >= 0)
         Console.Clear();
         Console.WriteLine("A man cast in a dark silhouette stands at the table");
         Console.WriteLine("A weird heat is emenating from him");
+        Console.WriteLine("Suddenly you hear a deep voice rumble in your ears");
         Console.WriteLine("'Welcome to the roulette table'");
         while (!leave)
         {
@@ -969,6 +970,9 @@ while (!bankrupt && loanTime >= 0)
             }
             else if (choice == "2")
             {
+                Console.WriteLine();
+                Console.WriteLine("You coward");
+                Thread.Sleep(1000);
                 choice = "0";
                 leave = true;
             }
@@ -1004,13 +1008,13 @@ while (!bankrupt && loanTime >= 0)
         }
         if (choice == "1")
         {
+            choice = "0";
             Console.Clear();
 
             while (!leave)
             {
                 try
                 {
-                    Console.WriteLine();
                     Console.WriteLine("'How much would you like to deposit?'");
                     bankInput = Convert.ToInt32(Console.ReadLine());
                 }
@@ -1026,13 +1030,14 @@ while (!bankrupt && loanTime >= 0)
                     account += bankInput;
                     Console.WriteLine();
                     Console.WriteLine("'You have successfully made a deposit of " + bankInput + " fragmented souls'");
-                    Thread.Sleep(1000);
+                    Thread.Sleep(2000);
                     break;
                 }
                 else if (bankInput == 0)
                 {
                     Console.WriteLine();
                     Console.WriteLine("You regret your decisions last minute and leave");
+                    Thread.Sleep(2000);
                     leave = true;
                 }
                 else
@@ -1044,42 +1049,52 @@ while (!bankrupt && loanTime >= 0)
         }
         else if (choice == "2")
         {
-            Console.Clear();
-
-            while (!leave)
+            choice = "0";
+            if (account > 0)
             {
-                try
+                Console.Clear();
+
+                while (!leave)
                 {
-                    Console.WriteLine();
-                    Console.WriteLine("'How much would you like to withdraw?'");
-                    bankInput = Convert.ToInt32(Console.ReadLine());
+                    try
+                    {
+                        Console.WriteLine("'How much would you like to withdraw?'");
+                        bankInput = Convert.ToInt32(Console.ReadLine());
+                    }
+                    catch
+                    {
+                        Console.WriteLine();
+                        Console.WriteLine("'You know you can only withdraw souls, right?'");
+                        continue;
+                    }
+                    if (bankInput > 0 && bankInput <= account)
+                    {
+                        wallet += bankInput;
+                        account -= bankInput;
+                        Console.WriteLine();
+                        Console.WriteLine("'You have successfully made a withrawal of " + bankInput + " fragmented souls'");
+                        Thread.Sleep(1000);
+                        break;
+                    }
+                    else if (bankInput == 0)
+                    {
+                        Console.WriteLine();
+                        Console.WriteLine("You regret your decisions last minute and leave");
+                        Thread.Sleep(2000);
+                        leave = true;
+                    }
+                    else
+                    {
+                        Console.WriteLine();
+                        Console.WriteLine("'You do know that this is an impossible amount considering your current balance, right?'");
+                    }
                 }
-                catch
-                {
-                    Console.WriteLine();
-                    Console.WriteLine("'You know you can only withdraw souls, right?'");
-                    continue;
-                }
-                if (bankInput > 0 && bankInput <= account)
-                {
-                    wallet += bankInput;
-                    account -= bankInput;
-                    Console.WriteLine();
-                    Console.WriteLine("'You have successfully made a withrawal of " + bankInput + " fragmented souls'");
-                    Thread.Sleep(1000);
-                    break;
-                }
-                else if (bankInput == 0)
-                {
-                    Console.WriteLine();
-                    Console.WriteLine("You regret your decisions last minute and leave");
-                    leave = true;
-                }
-                else
-                {
-                    Console.WriteLine();
-                    Console.WriteLine("'You do know that this is an impossible amount considering your current balance, right?'");
-                }
+            }
+            else
+            {
+                Console.WriteLine();
+                Console.WriteLine("You don't have anything to withdraw, so you head back to the lobby");
+                Thread.Sleep(3000);
             }
         }
         if (choice == "3")
@@ -1170,6 +1185,8 @@ while (!bankrupt && loanTime >= 0)
                             if(wallet > loan)
                             {
                                 wallet -= loan;
+                                Console.WriteLine("You successfully paid off your loan of " + loan + " souls");
+                                Thread.Sleep(3000);
                                 hasLoan = false;
                                 leave = true;
                             }
@@ -1185,6 +1202,11 @@ while (!bankrupt && loanTime >= 0)
                             continue;
                         }
                     }
+                    else if (choice == "5")
+                    {
+                        choice = "0";
+                        leave = true;
+                    }
                 }
             }
         }
@@ -1192,6 +1214,7 @@ while (!bankrupt && loanTime >= 0)
         {
             choice = "0";
             Console.WriteLine("You return back to the lobby");
+            Thread.Sleep(2000);
             leave = true;
         }
     }
